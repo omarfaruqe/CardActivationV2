@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="bd.gov.activation">
 
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.nfc.action.TECH_DISCOVERED" />
+
+    <uses-feature android:name="android.hardware.nfc" />
+
+
     <application
             android:allowBackup="true"
             android:icon="@drawable/rcclogo"

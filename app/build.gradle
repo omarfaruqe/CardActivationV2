@@ -30,4 +30,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'org.jetbrains.anko:anko:0.10.8'
+    implementation 'com.beust:klaxon:5.0.1'
+    //    implementation "com.squareup.moshi:moshi-adapters:1.5.0"
+    //    implementation "com.squareup.moshi:moshi-kotlin:1.5.0"
+    //    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.google.code.gson:gson:2.4'
+    api 'com.google.guava:guava:26.0-android'
+
 }
