@@ -12,14 +12,14 @@
             android:inputType="number|textPersonName"
             android:ems="10"
             android:id="@+id/editTextApplicationID"
-            android:hint="Application ID"
+            android:hint="@string/application_id"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp" android:textSize="24sp"
             style="@android:style/Widget.DeviceDefault.EditText" android:textStyle="bold"
             app:layout_constraintHorizontal_bias="0.0" android:layout_marginTop="16dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" android:autofillHints="" tools:targetApi="o"/>
     <Button
-            android:text="Get Application"
+            android:text="@string/get_application"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/buttonGetApplication"
@@ -27,7 +27,7 @@
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp" android:textSize="30sp"/>
     <TextView
-            android:text="Application Information"
+            android:text="@string/application_information"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/textViewApplicationInformation"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/buttonGetApplication"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/editTextSerialNumber"/>
     <TextView
-            android:text="KHA"
+            android:text="@string/kha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewApplicationType"
@@ -55,15 +55,15 @@
             android:inputType="number|textPersonName"
             android:ems="10"
             android:id="@+id/editTextSerialNumber"
-            android:hint="Serial Number"
+            android:hint="@string/serial_number"
             android:textSize="24sp"
             style="@android:style/Widget.DeviceDefault.EditText" android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textViewRFIDNumber"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp" app:layout_constraintStart_toEndOf="@+id/textViewApplicationType"
-            android:layout_marginStart="16dp"/>
+            android:layout_marginStart="16dp" android:autofillHints="" tools:targetApi="o"/>
     <TextView
-            android:text="RFID Number"
+            android:text="@string/rfid_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/textViewRFIDNumber"
@@ -73,7 +73,7 @@
             android:layout_marginStart="8dp" android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/buttonActivateCard" app:layout_constraintHorizontal_bias="0.0"/>
     <Button
-            android:text="Activate Card"
+            android:text="@string/activate_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/buttonActivateCard"

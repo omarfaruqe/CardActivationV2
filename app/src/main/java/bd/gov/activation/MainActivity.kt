@@ -23,7 +23,9 @@ import bd.gov.activation.APICall.RequestAPI
 import bd.gov.activation.model.Vehicle
 import bd.gov.activation.parser.NdefMessageParser
 import bd.gov.activation.utils.Utils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.doAsync
 import org.w3c.dom.Text
 
 //import org.jetbrains.anko.doAsync
@@ -34,37 +36,39 @@ class MainActivity : AppCompatActivity() {
 
     private val output = StringBuilder()
     private var nfcAdapter: NfcAdapter? = null
-    // launch our application when a new Tag or Card will be scanned
     private var pendingIntent: PendingIntent? = null
-    // display the data read
+
 //    val url = "https://rajshahircc.herokuapp.com/api/vehicle/read_one.php?RFID="
+    val url = "http://rcc-ars.com/api/mobile/PXQEV34qq1p9iyJN9WFG/check?tracking_id="
+
+    val updateUrl = "http://rcc-ars.com/api/mobile/h7EEXGs8WhcwNCEQ9Spj/update?tracking_id="
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        var text: TextView = findViewById<View>(R.id.textViewRFIDNumber) as TextView
 
-        var btnGetData: Button = findViewById<View>(R.id.buttonGetApplication) as Button
-//        var txtContents: TextView = findViewById<View>(R.id.txtContents) as TextView
+        var applicationInformaiton = findViewById<View>(R.id.textViewApplicationInformation) as TextView
+        var rfidNumber = findViewById<View>(R.id.textViewRFIDNumber) as TextView
+        var serialNumber = findViewById<View>(R.id.editTextSerialNumber) as EditText
+        var applicationID = findViewById<View>(R.id.editTextApplicationID) as EditText
+        var btnGetData = findViewById<View>(R.id.buttonGetApplication) as Button
+        var btnActivateCard = findViewById<View>(R.id.buttonActivateCard) as Button
 
-//        val btnRecharge = findViewById<Button>(R.id.btnRecharge)
+        btnActivateCard.setOnClickListener{
+            applicationInformaiton.text = "Getting Application Information"
+            if(serialNumber.length() == 0){
+                applicationInformaiton.text = "Serial Number is Empty"
+            }else if(rfidNumber.length() == 0){
+                applicationInformaiton.text = "RFID Number is Empty"
+            }else{
+                applicationInformaiton.text = "Card is activating, please wait!"
 
-//        btnRecharge.setOnClickListener {
-//            val intent = Intent(this, RechargeActivity::class.java)
-//            startActivity(intent)
-//        }
-
-//        btnGetData.setOnClickListener { _ ->
-//            Log.i("Button Action", "Button Clicked")
-//            if (text.length() == 0){
-//                txtContents.setText("RFID field is empty")
-//            }else{
-//                val finalURL = url + text.text
+                val finalURL = url + applicationID.text + "&card_no=" + serialNumber.text + "&rfid_no=" + rfidNumber.text
 //                txtContents.setText(finalURL + "\nPlease wait for a moment. \n Fetching Data From Server")
-//                doAsync {
-//                    output.setLength(0)
-//                    val jsongData = RequestAPI(finalURL).run()
+                doAsync {
+                    output.setLength(0)
+                    val jsongData = RequestAPI(finalURL).run()
 //
 //                    var jsonArray2 = Gson().fromJson(jsongData, Vehicle::class.java)
 //                    output.append("Name: ").append(jsonArray2.Name).append("\n")
@@ -74,9 +78,38 @@ class MainActivity : AppCompatActivity() {
 //                    output.append("Valid Till: ").append(jsonArray2.ValidTill).append("\n")
 //                    txtContents.setText(output.toString())
 //
-//                }
-//            }
+                }
+            }
+        }
+
+//        btnRecharge.setOnClickListener {
+//            val intent = Intent(this, RechargeActivity::class.java)
+//            startActivity(intent)
 //        }
+
+        btnGetData.setOnClickListener { _ ->
+            applicationInformaiton.text = "Getting Application Information"
+            if (applicationID.length() == 0){
+                applicationInformaiton.text = "application ID is Empty"
+            }else{
+                applicationInformaiton.text = "Getting Application Information"
+                val finalURL = url + applicationID.text
+//                txtContents.setText(finalURL + "\nPlease wait for a moment. \n Fetching Data From Server")
+                doAsync {
+                    output.setLength(0)
+                    val jsongData = RequestAPI(finalURL).run()
+//
+//                    var jsonArray2 = Gson().fromJson(jsongData, Vehicle::class.java)
+//                    output.append("Name: ").append(jsonArray2.Name).append("\n")
+//                    output.append("VIN: ").append(jsonArray2.VIN).append("\n")
+//                    output.append("Address: ").append(jsonArray2.Address).append("\n")
+//                    output.append("RFID: ").append(jsonArray2.RFID).append("\n")
+//                    output.append("Valid Till: ").append(jsonArray2.ValidTill).append("\n")
+//                    txtContents.setText(output.toString())
+//
+                }
+            }
+        }
 
 
 
@@ -128,6 +161,7 @@ class MainActivity : AppCompatActivity() {
 //        sb.append("ID (hex): ").append(Utils.toHex(id)).append('\n')
 //        sb.append("ID (rev): ").append(Utils.toReversedHex(id)).append('\n')
         sb.append(Utils.toDec(id))
+//        sb.append(Utils.toReversedHex(id).toUpperCase())
 //        sb.append("ID (reversed dec): ").append(Utils.toReversedDec(id)).append('\n')
 
 
@@ -230,6 +264,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         val rfidNumber = findViewById<View>(R.id.textViewRFIDNumber) as TextView
-        rfidNumber.setText(builder.toString())
+        rfidNumber.text = builder.toString()
     }
 }
