@@ -60,12 +60,13 @@ class MainActivity : AppCompatActivity() {
                 applicationInformaiton.text = "RFID Number is Empty"
             }else{
                 applicationInformaiton.text = "Card is activating, please wait!"
+                var typeOfRegistration = applicationSeries.text
 
 //                var editor = sharedPreference.edit()
 //                editor.putString("serialnumber",serialNumber.text.toString())
 //                editor.commit()
 
-                val finalURL = updateUrl + applicationID.text + "&card_no=" + serialNumber.text + "&rfid_no=" + rfidNumber.text
+                val finalURL = updateUrl + applicationID.text + "&card_no=" + typeOfRegistration + "-" + serialNumber.text + "&rfid_no=" + rfidNumber.text
 //                txtContents.setText(finalURL + "\nPlease wait for a moment. \n Fetching Data From Server")
                 doAsync {
                     //output.setLength(0)
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                             applicationSeries.text = "GA"
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 3){
                             applicationType = "Driver Registration"
-                            applicationSeries.text = "D"
+                            applicationSeries.text = ""
                         }else{
                             applicationType = "Other Registration"
                         }
@@ -125,7 +126,6 @@ class MainActivity : AppCompatActivity() {
                                     jsonArray2.application.registration.mobile.toString() + "\n" +
                                     jsonArray2.application.registration.nid.toString()
                     })
-
                 }
             }
         }

@@ -4,6 +4,7 @@
     <string name="get_application">Get Application</string>
     <string name="application_information">Application Information</string>
     <string name="kha">KHA</string>
+    <string name="applicationType">SL</string>
     <string name="serial_number">Serial Number</string>
     <string name="rfid_number">RFID Number</string>
     <string name="activate_card">Activate Card</string>

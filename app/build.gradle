@@ -13,6 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -38,5 +39,9 @@ dependencies {
     //    implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.4'
     api 'com.google.guava:guava:26.0-android'
+
+    //For Barcode reading
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'com.android.support:multidex:1.0.3'
 
 }
