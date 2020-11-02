@@ -19,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import bd.gov.activation.APICall.RequestAPI
 import bd.gov.activation.model.ModelContainer
+import bd.gov.activation.model.ModelContainerRenew
 import bd.gov.activation.parser.NdefMessageParser
 import bd.gov.activation.utils.Utils
 import com.google.gson.Gson
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity() {
     val url = "https://rcc-ars.com/api/mobile/PXQEV34qq1p9iyJN9WFG/check?tracking_id="
 
     val updateUrl = "https://rcc-ars.com/api/mobile/h7EEXGs8WhcwNCEQ9Spj/update?tracking_id="
+
+    val renewUrl = "https://rcc-ars.com/api/v2/mobile/h7EEXGs8WhcwNCEQ9Spj/renewcard?rfid_no="
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +57,34 @@ class MainActivity : AppCompatActivity() {
 
         btnActivateCard.setOnClickListener{
             applicationInformaiton.text = "Getting Application Information"
-            if(serialNumber.length() == 0){
+            if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
+                applicationInformaiton.text = "Renewing/Securing Process"
+
+                val renewUrl = renewUrl + rfidNumber.text
+                doAsync {
+                    Log.i("Renew URL: ", renewUrl)
+                    val jsongData = RequestAPI(renewUrl).run()
+                    var jsonArray2 = Gson().fromJson(jsongData, ModelContainerRenew::class.java)
+
+                    runOnUiThread(Runnable{
+                        if(jsonArray2.status.toInt() == 1){
+                            applicationInformaiton.text =
+                                "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
+                                "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
+                                "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
+                                "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
+                                "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
+                                "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
+                                "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
+                                "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
+                                "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
+                        }else{
+                            applicationInformaiton.text = jsonArray2.msg.toString()
+                        }
+                    })
+                }
+
+            }else if(serialNumber.length() == 0){
                 applicationInformaiton.text = "Serial Number is Empty"
             }else if(rfidNumber.length() == 0){
                 applicationInformaiton.text = "RFID Number is Empty"
@@ -66,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 //                editor.putString("serialnumber",serialNumber.text.toString())
 //                editor.commit()
 
-                val finalURL = updateUrl + applicationID.text + "&card_no=" + typeOfRegistration + "-" + serialNumber.text + "&rfid_no=" + rfidNumber.text
+                val finalURL = updateUrl + applicationID.text + "&card_no=" + typeOfRegistration + serialNumber.text + "&rfid_no=" + rfidNumber.text
 //                txtContents.setText(finalURL + "\nPlease wait for a moment. \n Fetching Data From Server")
                 doAsync {
                     //output.setLength(0)
@@ -89,6 +119,8 @@ class MainActivity : AppCompatActivity() {
 
         btnGetData.setOnClickListener { _ ->
             applicationInformaiton.text = "Getting Application Information"
+            serialNumber.setText("")
+            rfidNumber.text = ""
             if (applicationID.length() == 0){
                 applicationInformaiton.text = "application ID is Empty"
             }else{
@@ -108,13 +140,13 @@ class MainActivity : AppCompatActivity() {
                         val applicationType: String
                         if(jsonArray2.application.applicationTypeId.toInt() == 1){
                             applicationType = "AutoRickshaw Registration"
-                            applicationSeries.text = "KHA"
+                            applicationSeries.text = "KHA-"
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 2){
                             applicationType = "ChargerRickshaw Registration"
-                            applicationSeries.text = "GA"
+                            applicationSeries.text = "GA-"
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 3){
                             applicationType = "Driver Registration"
-                            applicationSeries.text = ""
+                            applicationSeries.text = " D-"
                         }else{
                             applicationType = "Other Registration"
                         }
@@ -135,11 +167,11 @@ class MainActivity : AppCompatActivity() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
 
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+//        if (nfcAdapter == null) {
+//            Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show()
+//            finish()
+//            return
+//        }
 
         pendingIntent = PendingIntent.getActivity(this, 0,
                 Intent(this, this.javaClass)

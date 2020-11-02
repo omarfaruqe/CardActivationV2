@@ -18,9 +18,18 @@ public class ModelContainer {
     @Expose
     private Application application;
 
-//    @SerializedName("registration")
-//    @Expose
-//    private Registration registration;
+    @SerializedName("renewcard")
+    @Expose
+    private RenewCard renewcard;
+
+    public RenewCard getRenewcard() {
+        return renewcard;
+    }
+
+    public void setRenewcard(RenewCard renewcard) {
+        this.renewcard = renewcard;
+    }
+
 
     public Integer getStatus() {
         return status;
