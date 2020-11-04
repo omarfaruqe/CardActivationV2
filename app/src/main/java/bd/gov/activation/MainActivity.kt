@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity() {
 
     val renewUrl = "https://rcc-ars.com/api/v2/mobile/h7EEXGs8WhcwNCEQ9Spj/renewcard?rfid_no="
 
+    val secureUrl = "https://rcc-ars.com/api/v2/mobile/h7EEXGs8WhcwNCEQ9Spj/securecard?rfid_no="
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,12 +55,14 @@ class MainActivity : AppCompatActivity() {
         var applicationID = findViewById<View>(R.id.editTextApplicationID) as EditText
         var btnGetData = findViewById<View>(R.id.buttonGetApplication) as Button
         var btnActivateCard = findViewById<View>(R.id.buttonActivateCard) as Button
+        var btnRenewCard = findViewById<View>(R.id.buttonRenewCard) as Button
+        var btnSecureCard = findViewById<View>(R.id.buttonSecureCard) as Button
 
 
-        btnActivateCard.setOnClickListener{
+        btnRenewCard.setOnClickListener{
             applicationInformaiton.text = "Getting Application Information"
             if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
-                applicationInformaiton.text = "Renewing/Securing Process"
+                applicationInformaiton.text = "Renewing Process"
 
                 val renewUrl = renewUrl + rfidNumber.text
                 doAsync {
@@ -69,22 +73,44 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread(Runnable{
                         if(jsonArray2.status.toInt() == 1){
                             applicationInformaiton.text =
-                                "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
-                                "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
-                                "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
-                                "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
-                                "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
-                                "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
-                                "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
-                                "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
-                                "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
+                                        "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
+                                        "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
+                                        "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
+                                        "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
+                                        "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
+                                        "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
+                                        "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
+                                        "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
+                                        "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
                         }else{
                             applicationInformaiton.text = jsonArray2.msg.toString()
                         }
                     })
                 }
 
-            }else if(serialNumber.length() == 0){
+            }
+        }
+
+        btnSecureCard.setOnClickListener{
+
+            applicationInformaiton.text = "Getting Application Information"
+            if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
+                applicationInformaiton.text = "Securing Process"
+                val secureUrl = secureUrl + rfidNumber.text
+                doAsync {
+                    val jsongData = RequestAPI(secureUrl).run()
+                    var jsonArray2 = Gson().fromJson(jsongData, ModelContainerRenew::class.java)
+
+                    runOnUiThread(Runnable{
+                            applicationInformaiton.text = jsonArray2.msg.toString()
+                    })
+                }
+
+            }
+        }
+
+        btnActivateCard.setOnClickListener{
+            if(serialNumber.length() == 0){
                 applicationInformaiton.text = "Serial Number is Empty"
             }else if(rfidNumber.length() == 0){
                 applicationInformaiton.text = "RFID Number is Empty"

@@ -7,5 +7,7 @@
     <string name="applicationType">SL</string>
     <string name="serial_number">Serial Number</string>
     <string name="rfid_number">RFID Number</string>
-    <string name="activate_card">Activate Card</string>
+    <string name="activate_card">Activate</string>
+    <string name="secure_card">Secure</string>
+    <string name="renew_card">Renew</string>
 </resources>
