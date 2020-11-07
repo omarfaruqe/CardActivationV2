@@ -42,6 +42,12 @@ class MainActivity : AppCompatActivity() {
     val secureUrl = "https://rcc-ars.com/api/v2/mobile/h7EEXGs8WhcwNCEQ9Spj/securecard?rfid_no="
 
 
+    private val FactoryKey: ByteArray? = ubyteArrayOf(0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU).toByteArray()
+    private var CustomKeyA: String? = null
+    private var CustomKeyB: String? = null
+    private val SetCustomKey: ByteArray? =  ubyteArrayOf(0x01U, 0x23U, 0x45U, 0x67U, 0x89U, 0xABU, 0x78U, 0x77U, 0x88U, 0x69U, 0xBAU, 0x98U, 0x76U, 0x54U, 0x32U, 0x10U).toByteArray()
+    private val SetFactoryKey: ByteArray? = ubyteArrayOf(0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0x78U, 0x77U, 0x88U, 0x69U, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU).toByteArray()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -82,17 +88,21 @@ class MainActivity : AppCompatActivity() {
                                         "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
                                         "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
                                         "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
+                            CustomKeyA = jsonArray2.renewCard.keyA.toString()
+                            CustomKeyB = jsonArray2.renewCard.keyB.toString()
                         }else{
                             applicationInformaiton.text = jsonArray2.msg.toString()
                         }
                     })
                 }
-
             }
         }
 
         btnSecureCard.setOnClickListener{
 
+            Log.i("CustomKeyA", CustomKeyA.toString())
+            Log.i("CustomKeyB", CustomKeyB.toString())
+            
             applicationInformaiton.text = "Getting Application Information"
             if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
                 applicationInformaiton.text = "Securing Process"
@@ -117,20 +127,10 @@ class MainActivity : AppCompatActivity() {
             }else{
                 applicationInformaiton.text = "Card is activating, please wait!"
                 var typeOfRegistration = applicationSeries.text
-
-//                var editor = sharedPreference.edit()
-//                editor.putString("serialnumber",serialNumber.text.toString())
-//                editor.commit()
-
                 val finalURL = updateUrl + applicationID.text + "&card_no=" + typeOfRegistration + serialNumber.text + "&rfid_no=" + rfidNumber.text
-//                txtContents.setText(finalURL + "\nPlease wait for a moment. \n Fetching Data From Server")
                 doAsync {
-                    //output.setLength(0)
-                    Log.i("Final URL: ", finalURL)
                     val jsongData = RequestAPI(finalURL).run()
-//
                     var jsonArray2 = Gson().fromJson(jsongData, ModelContainer::class.java)
-
                     runOnUiThread(Runnable{
                         if(jsonArray2.status.toInt() == 1){
                             applicationInformaiton.text = "Update Successful"
@@ -152,16 +152,9 @@ class MainActivity : AppCompatActivity() {
             }else{
                 applicationInformaiton.text = "Getting Application Information"
                 val finalURL = url + applicationID.text
-
                 doAsync {
                     val jsongData = RequestAPI(finalURL).run()
                     var jsonArray2 = Gson().fromJson(jsongData, ModelContainer::class.java)
-
-
-//                    var editor = sharedPreference.edit()
-//                    editor.putString("applicationid",applicationID.text.toString())
-//                    editor.commit()
-
                     runOnUiThread(Runnable{
                         val applicationType: String
                         if(jsonArray2.application.applicationTypeId.toInt() == 1){
@@ -176,7 +169,6 @@ class MainActivity : AppCompatActivity() {
                         }else{
                             applicationType = "Other Registration"
                         }
-
                         applicationInformaiton.text =
                             applicationType + "\n" +
                                     jsonArray2.application.registration.name.toString() + "\n" +
@@ -191,8 +183,6 @@ class MainActivity : AppCompatActivity() {
 
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
-
 //        if (nfcAdapter == null) {
 //            Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show()
 //            finish()
