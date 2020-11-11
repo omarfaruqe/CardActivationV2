@@ -10,4 +10,8 @@
     <string name="activate_card">Activate</string>
     <string name="secure_card">Secure</string>
     <string name="renew_card">Renew</string>
+    <string name="tap_your_card">Please tap your card</string>
+    <string name="card_uid">Card UID:</string>
+    <string name="done">Done</string>
+    <string name="rfid_field_empty_message">Card UID Empty</string>
 </resources>

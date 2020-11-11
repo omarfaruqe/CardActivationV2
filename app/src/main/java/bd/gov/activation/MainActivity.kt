@@ -66,36 +66,37 @@ class MainActivity : AppCompatActivity() {
 
 
         btnRenewCard.setOnClickListener{
-            applicationInformaiton.text = "Getting Application Information"
-            if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
-                applicationInformaiton.text = "Renewing Process"
-
-                val renewUrl = renewUrl + rfidNumber.text
-                doAsync {
-                    Log.i("Renew URL: ", renewUrl)
-                    val jsongData = RequestAPI(renewUrl).run()
-                    var jsonArray2 = Gson().fromJson(jsongData, ModelContainerRenew::class.java)
-
-                    runOnUiThread(Runnable{
-                        if(jsonArray2.status.toInt() == 1){
-                            applicationInformaiton.text =
-                                        "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
-                                        "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
-                                        "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
-                                        "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
-                                        "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
-                                        "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
-                                        "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
-                                        "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
-                                        "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
-                            CustomKeyA = jsonArray2.renewCard.keyA.toString()
-                            CustomKeyB = jsonArray2.renewCard.keyB.toString()
-                        }else{
-                            applicationInformaiton.text = jsonArray2.msg.toString()
-                        }
-                    })
-                }
-            }
+            startActivity(Intent(this, RenewCard::class.java))
+//            applicationInformaiton.text = "Getting Application Information"
+//            if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
+//                applicationInformaiton.text = "Renewing Process"
+//
+//                val renewUrl = renewUrl + rfidNumber.text
+//                doAsync {
+//                    Log.i("Renew URL: ", renewUrl)
+//                    val jsongData = RequestAPI(renewUrl).run()
+//                    var jsonArray2 = Gson().fromJson(jsongData, ModelContainerRenew::class.java)
+//
+//                    runOnUiThread(Runnable{
+//                        if(jsonArray2.status.toInt() == 1){
+//                            applicationInformaiton.text =
+//                                        "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
+//                                        "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
+//                                        "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
+//                                        "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
+//                                        "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
+//                                        "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
+//                                        "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
+//                                        "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
+//                                        "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
+//                            CustomKeyA = jsonArray2.renewCard.keyA.toString()
+//                            CustomKeyB = jsonArray2.renewCard.keyB.toString()
+//                        }else{
+//                            applicationInformaiton.text = jsonArray2.msg.toString()
+//                        }
+//                    })
+//                }
+//            }
         }
 
         btnSecureCard.setOnClickListener{

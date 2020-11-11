@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="bd.gov.activation">
+        package="bd.gov.activation">
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -9,29 +9,27 @@
 
     <uses-feature android:name="android.hardware.nfc" />
 
-
-
     <application
             android:name=".BarcodeReader"
-            android:hardwareAccelerated="true"
-
             android:allowBackup="true"
+            android:hardwareAccelerated="true"
             android:icon="@drawable/rcclogo"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".RenewCard"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
-
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+                android:name="org.apache.http.legacy"
+                android:required="false" />
     </application>
 
 </manifest>
