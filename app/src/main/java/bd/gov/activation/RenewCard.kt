@@ -10,6 +10,7 @@ import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.Tag
+import android.nfc.tech.MifareClassic
 import android.os.Parcelable
 import android.provider.Settings.ACTION_NFC_SETTINGS
 import android.text.Editable
@@ -34,17 +35,12 @@ class RenewCard : AppCompatActivity() {
     private var nfcAdapter: NfcAdapter? = null
     private var pendingIntent: PendingIntent? = null
     private val output = StringBuilder()
+    private lateinit var tag: Tag
 
-
-    //    val url = "https://rajshahircc.herokuapp.com/api/vehicle/read_one.php?RFID="
     val url = "https://rcc-ars.com/api/mobile/PXQEV34qq1p9iyJN9WFG/check?tracking_id="
-
     val updateUrl = "https://rcc-ars.com/api/mobile/h7EEXGs8WhcwNCEQ9Spj/update?tracking_id="
-
     val renewUrl = "https://rcc-ars.com/api/v2/mobile/h7EEXGs8WhcwNCEQ9Spj/renewcard?rfid_no="
-
     val secureUrl = "https://rcc-ars.com/api/v2/mobile/h7EEXGs8WhcwNCEQ9Spj/securecard?rfid_no="
-
 
     private val FactoryKey: ByteArray? =
         ubyteArrayOf(0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU).toByteArray()
@@ -133,15 +129,46 @@ class RenewCard : AppCompatActivity() {
                         runOnUiThread {
                             if (jsonArray2.status == 1) {
                                 textCardInformation.text =
-                                        "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
-                                        "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
-                                        "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
-                                        "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
-                                        "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
-                                        "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
-                                        "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
-                                        "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
-                                        "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
+                                    "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
+                                            "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
+                                            "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
+                                            "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
+                                            "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
+                                            "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
+                                            "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
+                                            "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
+                                            "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
+                                doAsync {
+                                    Log.i("Card Writing", "Card Writing async task")
+
+                                    val cardStatus = WriteIntent2(
+                                        tag,
+                                        jsonArray2.renewCard.keyB.toString(),
+                                        jsonArray2.renewCard.cardNo.toString(),
+                                        jsonArray2.renewCard.secured.toString(),
+                                        0
+                                    )
+
+                                    Log.i("Card Status", cardStatus.toString())
+                                    if (cardStatus == 3) {
+                                        doAsync {
+                                            val secureUrl =
+                                                secureUrl + jsonArray2.renewCard.rfidNo.toString()
+                                            Log.i("Secure URL: ", secureUrl)
+                                            val jsongData3 = RequestAPI(renewUrl).run()
+                                            var jsonArray3 = Gson().fromJson(
+                                                jsongData,
+                                                ModelContainerRenew::class.java
+                                            )
+                                            runOnUiThread {
+                                                if (jsonArray3.status == 1) {
+                                                    textCardUID.text = "Secured"
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
                             } else {
                             }
 
@@ -219,7 +246,9 @@ class RenewCard : AppCompatActivity() {
             } else {
                 val empty = ByteArray(0)
                 val id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)
-                val tag = intent.getParcelableExtra<Parcelable>(NfcAdapter.EXTRA_TAG) as Tag
+                tag = intent.getParcelableExtra<Parcelable>(NfcAdapter.EXTRA_TAG) as Tag
+                Log.i("RFID Tag", tag.toString())
+
                 val payload = dumpTagData(tag).toByteArray()
                 val record = NdefRecord(NdefRecord.TNF_UNKNOWN, empty, id, payload)
                 val emptyMsg = NdefMessage(arrayOf(record))
@@ -243,6 +272,114 @@ class RenewCard : AppCompatActivity() {
             val str = record.str()
             builder.append(str).append("\n")
         }
+
+
         textCardUID.text = builder.toString()
+    }
+
+//Qaosar' resolveIntent function
+
+//    private fun resolveIntent(intent: Intent) {
+//        val action = intent.action
+//        val charset = Charsets.UTF_8
+//        textCardInformation.text = ""
+//        if (NfcAdapter.ACTION_TAG_DISCOVERED == action
+//            || NfcAdapter.ACTION_TECH_DISCOVERED == action
+//            || NfcAdapter.ACTION_NDEF_DISCOVERED == action
+//        ) {
+//            val tag = intent.getParcelableExtra<Parcelable>(NfcAdapter.EXTRA_TAG) as Tag
+//            val id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)
+//            var status = WriteIntent2(tag, "ABCDEF", "123456", "KHA-03915", 0)
+//            //card status: 0=key not modified, 1=key modified
+//            textCardUID.text = id.toString()
+//            textCardInformation.setText(status.toString())
+//        }
+//    }
+
+    private val KeySetting: ByteArray? = ubyteArrayOf(0x78U, 0x77U, 0x88U, 0x69U).toByteArray()
+
+    /*
+return status
+0: card not found
+1: operation succeeded
+2: authentication failed
+3: card write failed
+*/
+    private fun WriteIntent2(
+        tag: Tag,
+        keyA: String,
+        keyB: String,
+        CardNo: String,
+        CardStatus: Int
+    ): Int {
+        val mfc = MifareClassic.get(tag) as MifareClassic
+        var blockno = 20
+
+        mfc.connect()
+        if (mfc.isConnected) {
+            var KeyB: ByteArray? =
+                ubyteArrayOf(0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU).toByteArray()
+            if (CardStatus == 1) {
+                KeyB = keyB.toByteArray()
+            }
+            var sectorno = mfc.blockToSector(blockno)
+            var keyblockno = mfc.sectorToBlock(sectorno + 1) - 1
+
+            if (mfc.authenticateSectorWithKeyB(sectorno, KeyB) == true) {
+                val KeyData: ByteArray? = ubyteArrayOf(
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0x78U,
+                    0x77U,
+                    0x88U,
+                    0x69U,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU,
+                    0xFFU
+                ).toByteArray()
+                if (KeyData != null) {
+                    keyA.toByteArray().copyInto(KeyData, 0, 0, 6)
+                }
+                if (KeyData != null) {
+                    if (KeySetting != null) {
+                        KeySetting.copyInto(KeyData, 6, 0, 4)
+                    }
+                }
+                if (KeyData != null) {
+                    keyB.toByteArray().copyInto(KeyData, 10, 0, 6)
+                }
+
+                var CrdNo = CardNo
+                var len = CardNo.length
+                if (len > 16) {
+                    CrdNo = CardNo.substring(0, 16)
+                }
+
+                while (CrdNo.length < 16) {
+                    CrdNo = CrdNo + " "
+                }
+
+                try {
+                    mfc.writeBlock(blockno, CrdNo.toByteArray())
+                    mfc.writeBlock(keyblockno, KeyData)
+                } catch (ex: Exception) {
+                    return 3
+                }
+            } else {
+                return 2
+            }
+
+            mfc.close()
+        } else {
+            return 0
+        }
+        return 1
     }
 }
