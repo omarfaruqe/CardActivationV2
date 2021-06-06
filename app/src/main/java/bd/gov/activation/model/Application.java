@@ -9,15 +9,23 @@ public class Application {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("application_type_id")
+
+    @SerializedName("card_type_id")
     @Expose
     private String applicationTypeId;
+
     @SerializedName("registration_id")
     @Expose
     private String registrationId;
+
     @SerializedName("tracking_id")
     @Expose
     private String trackingId;
+
+//    @SerializedName("card_type_id")
+//    @Expose
+//    private String cardTypeId;
+
     @SerializedName("fee_type")
     @Expose
     private String feeType;
