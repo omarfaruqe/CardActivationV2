@@ -167,6 +167,15 @@ class MainActivity : AppCompatActivity() {
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 3){
                             applicationType = "Driver Registration"
                             applicationSeries.text = " D-"
+                        }else if(jsonArray2.application.applicationTypeId.toInt() == 4){
+                            applicationType = "Driver Registration"
+                            applicationSeries.text = " D-"
+                        }else if(jsonArray2.application.applicationTypeId.toInt() == 5){
+                            applicationType = "Driver Registration"
+                            applicationSeries.text = " D-"
+                        }else if(jsonArray2.application.applicationTypeId.toInt() == 6){
+                            applicationType = "Driver Registration"
+                            applicationSeries.text = " D-"
                         }else{
                             applicationType = "Other Registration"
                         }
