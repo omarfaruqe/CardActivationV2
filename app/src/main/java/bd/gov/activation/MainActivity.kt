@@ -64,39 +64,26 @@ class MainActivity : AppCompatActivity() {
         var btnRenewCard = findViewById<View>(R.id.buttonRenewCard) as Button
         var btnSecureCard = findViewById<View>(R.id.buttonSecureCard) as Button
 
+        var applicationName = ""
+        var applicationNID = ""
+        var applicationMobile = ""
+        var applicationFather = ""
+
+
 
         btnRenewCard.setOnClickListener{
-            startActivity(Intent(this, RenewCard::class.java))
-//            applicationInformaiton.text = "Getting Application Information"
-//            if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0){
-//                applicationInformaiton.text = "Renewing Process"
-//
-//                val renewUrl = renewUrl + rfidNumber.text
-//                doAsync {
-//                    Log.i("Renew URL: ", renewUrl)
-//                    val jsongData = RequestAPI(renewUrl).run()
-//                    var jsonArray2 = Gson().fromJson(jsongData, ModelContainerRenew::class.java)
-//
-//                    runOnUiThread(Runnable{
-//                        if(jsonArray2.status.toInt() == 1){
-//                            applicationInformaiton.text =
-//                                        "ID: " + jsonArray2.renewCard.id.toString() + "\n" +
-//                                        "Card NO: " + jsonArray2.renewCard.cardNo.toString() + "\n" +
-//                                        "RFID NO: " + jsonArray2.renewCard.rfidNo.toString() + "\n" +
-//                                        "Expiry: " + jsonArray2.renewCard.expiry.toString() + "\n" +
-//                                        "Key A: " + jsonArray2.renewCard.keyA.toString() + "\n" +
-//                                        "Key B: " + jsonArray2.renewCard.keyB.toString() + "\n" +
-//                                        "Disabled: " + jsonArray2.renewCard.disabled.toString() + "\n" +
-//                                        "Secured: " + jsonArray2.renewCard.secured.toString() + "\n" +
-//                                        "Cloned: " + jsonArray2.renewCard.cloned.toString() + "\n"
-//                            CustomKeyA = jsonArray2.renewCard.keyA.toString()
-//                            CustomKeyB = jsonArray2.renewCard.keyB.toString()
-//                        }else{
-//                            applicationInformaiton.text = jsonArray2.msg.toString()
-//                        }
-//                    })
-//                }
-//            }
+           // if(serialNumber.length() == 0 && applicationID.length() == 0 && rfidNumber.length() != 0) {
+            val intent = Intent(applicationContext, WriteOnCard::class.java)
+            intent.putExtra("applicationName", applicationName);
+            intent.putExtra("applicationNID", applicationNID);
+            intent.putExtra("applicationMobile", applicationMobile);
+            intent.putExtra("applicationFather", applicationFather);
+            intent.putExtra("trackingId", applicationID.text.toString());
+            intent.putExtra("rfidNumber", rfidNumber.text.toString());
+            intent.putExtra("serialNumber", serialNumber.text.toString());
+                startActivity(intent);
+                //startActivity(Intent(this, WriteOnCard::class.java))
+           // }
         }
 
         btnSecureCard.setOnClickListener{
@@ -179,18 +166,15 @@ class MainActivity : AppCompatActivity() {
                         }else{
                             applicationType = "Other Registration"
                         }
-                        applicationInformaiton.text =
-                            applicationType + "\n" +
-                                    jsonArray2.application.registration.name.toString() + "\n" +
-                                    jsonArray2.application.registration.fatherName.toString() + "\n" +
-                                    jsonArray2.application.registration.mobile.toString() + "\n" +
-                                    jsonArray2.application.registration.nid.toString()
+                        applicationName = jsonArray2.application.registration.name.toString()
+                        applicationNID = jsonArray2.application.registration.nid.toString()
+                        applicationMobile = jsonArray2.application.registration.mobile.toString()
+                        applicationFather = jsonArray2.application.registration.fatherName.toString()
+                        applicationInformaiton.text =  applicationType + "\n" + applicationName + "\n" + applicationFather + "\n" + applicationMobile + "\n" + applicationNID
                     })
                 }
             }
         }
-
-
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 //        if (nfcAdapter == null) {
