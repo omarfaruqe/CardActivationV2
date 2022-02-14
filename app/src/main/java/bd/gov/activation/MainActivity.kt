@@ -116,7 +116,6 @@ class MainActivity : AppCompatActivity() {
                             applicationInformaiton.text = jsonArray2.msg.toString()
                     })
                 }
-
             }
         }
 
@@ -159,21 +158,42 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread(Runnable{
                         val applicationType: String
                         if(jsonArray2.application.applicationTypeId.toInt() == 1){
-                            applicationType = "AutoRickshaw Registration"
-                            applicationSeries.text = "KHA-"
+                            if(jsonArray2.application.caseType.toString() == "regular"){
+                                applicationType = "Auto Rickshaw Registration"
+                                applicationSeries.text = "KHA-"
+                            }else if (jsonArray2.application.caseType.toString() == "commercial"){
+                                applicationType = "Auto Rickshaw (Commercial) Registration"
+                                applicationSeries.text = "KHA-B-"
+                            }else if (jsonArray2.application.caseType.toString() == "private"){
+                                applicationType = "Auto Rickshaw (Private) Registration"
+                                applicationSeries.text = "KHA-P-"
+                            }else{
+                                applicationType = "Other Registration"
+                            }
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 2){
-                            applicationType = "ChargerRickshaw Registration"
-                            applicationSeries.text = "GA-"
+                            if(jsonArray2.application.caseType.toString() == "regular"){
+                                applicationType = "Charger Rickshaw Registration"
+                                applicationSeries.text = "GA-"
+                            }else if (jsonArray2.application.caseType.toString() == "private"){
+                                applicationType = "Charger Rickshaw (Private) Registration"
+                                applicationSeries.text = "GA-P-"
+                            }else{
+                                applicationType = "Other Registration"
+                            }
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 3){
-                            applicationType = "Driver Registration"
-                            applicationSeries.text = " D-"
+                            if(jsonArray2.application.caseType.toString() == "regular"){
+                                applicationType = "Charger Van Registration"
+                                applicationSeries.text = "VA-"
+                            }else if (jsonArray2.application.caseType.toString() == "commercial"){
+                                applicationType = "Charger van (Commercial) Registration"
+                                applicationSeries.text = "VA-B-"
+                            }else{
+                                applicationType = "Other Registration"
+                            }
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 4){
-                            applicationType = "Driver Registration"
-                            applicationSeries.text = " D-"
+                            applicationType = "Charger Bike Registration"
+                            applicationSeries.text = " BIK-"
                         }else if(jsonArray2.application.applicationTypeId.toInt() == 5){
-                            applicationType = "Driver Registration"
-                            applicationSeries.text = " D-"
-                        }else if(jsonArray2.application.applicationTypeId.toInt() == 6){
                             applicationType = "Driver Registration"
                             applicationSeries.text = " D-"
                         }else{

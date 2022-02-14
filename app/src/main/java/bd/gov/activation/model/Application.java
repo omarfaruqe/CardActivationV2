@@ -14,6 +14,18 @@ public class Application {
     @Expose
     private String applicationTypeId;
 
+    public String getCaseType() {
+        return caseType;
+    }
+
+    public void setCaseType(String caseType) {
+        this.caseType = caseType;
+    }
+
+    @SerializedName("case")
+    @Expose
+    private String caseType;
+
     @SerializedName("registration_id")
     @Expose
     private String registrationId;
@@ -22,13 +34,10 @@ public class Application {
     @Expose
     private String trackingId;
 
-//    @SerializedName("card_type_id")
-//    @Expose
-//    private String cardTypeId;
-
     @SerializedName("fee_type")
     @Expose
     private String feeType;
+
     @SerializedName("approvals")
     @Expose
     private String approvals;
